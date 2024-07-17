@@ -1,0 +1,28 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "authn.fullname" . }}
+  labels:
+    {{- include "authn.labels" . | nindent 4 }}
+rules:
+# krateo basic.authn crd
+- apiGroups:
+  - basic.authn.krateo.io
+  resources:
+  - users
+  verbs:
+  - list
+# krateo oauth.authn crd
+- apiGroups:
+  - oauth.authn.krateo.io
+  resources:
+  - githubconfigs
+  verbs:
+  - list
+# LDAP crd
+- apiGroups:
+  - ldap.authn.krateo.io
+  resources:
+  - ldapconfigs
+  verbs:
+  - list

@@ -5,24 +5,74 @@ metadata:
   labels:
     {{- include "authn.labels" . | nindent 4 }}
 rules:
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  - configmaps
+  verbs:
+  - get
+  - list
+  - create
+  - update
+# allow creating, deleting and retrieving any CertificateSigningRequest
+- apiGroups:
+  - certificates.k8s.io
+  resources:
+  - certificatesigningrequests
+  verbs:
+  - get
+  - create
+  - list
+  - delete
+  - deletecollection
+  - watch
+# allow approving a CertificateSigningRequest:
+- apiGroups:
+  - certificates.k8s.io
+  resources:
+  - certificatesigningrequests/approval
+  verbs:
+  - update
+- apiGroups:
+  - certificates.k8s.io
+  resources:
+  - signers
+  resourceNames:
+  - kubernetes.io/kube-apiserver-client
+  verbs:
+  - approve
+# allow signing a CertificateSigningRequest:
+- apiGroups:
+  - certificates.k8s.io
+  resources:
+  - certificatesigningrequests/status
+  verbs:
+  - update
 # krateo basic.authn crd
 - apiGroups:
   - basic.authn.krateo.io
   resources:
   - users
   verbs:
+  - get
   - list
+  - watch
 # krateo oauth.authn crd
 - apiGroups:
   - oauth.authn.krateo.io
   resources:
   - githubconfigs
   verbs:
+  - get
   - list
+  - watch
 # LDAP crd
 - apiGroups:
   - ldap.authn.krateo.io
   resources:
   - ldapconfigs
   verbs:
+  - get
   - list
+  - watch

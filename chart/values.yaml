@@ -112,4 +112,4 @@ env:
   AUTHN_KUBECONFIG_CRT_EXPIRES_IN: "24h"
   AUTHN_KUBECONFIG_SERVER_URL: "https://kube-apiserver:6443"
   AUTHN_CORS: "true"
-  AUTHN_DUMP_ENV: "false"
+  AUTHN_DUMP_ENV: "true"

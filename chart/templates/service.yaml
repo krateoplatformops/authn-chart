@@ -4,6 +4,10 @@ metadata:
   name: {{ include "authn.fullname" . }}
   labels:
     {{- include "authn.labels" . | nindent 4 }}
+  annotations:
+    {{- with .Values.service.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -13,6 +17,6 @@ spec:
       name: http
       {{- if eq .Values.service.type "NodePort" }}
       nodePort: {{ .Values.service.nodePort }}
-      {{- end }}  
+      {{- end }}
   selector:
     {{- include "authn.selectorLabels" . | nindent 4 }}

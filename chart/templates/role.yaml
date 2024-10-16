@@ -42,3 +42,12 @@ rules:
   - get
   - list
   - watch
+# OIDC crd
+- apiGroups:
+  - oidc.authn.krateo.io
+  resources:
+  - oidcconfigs
+  verbs:
+  - get
+  - list
+  - watch

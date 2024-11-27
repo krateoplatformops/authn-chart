@@ -6,11 +6,8 @@ metadata:
     {{- include "authn.labels" . | nindent 4 }}
 data:
   AUTHN_PORT: "{{ .Values.service.port }}"
-  AUTHN_DEBUG: "{{ .Values.env.AUTHN_DEBUG }}"
-  AUTHN_KUBECONFIG_CLUSTER_NAME: "{{ .Values.env.AUTHN_KUBECONFIG_CLUSTER_NAME }}"
-  AUTHN_KUBECONFIG_CRT_EXPIRES_IN: {{ .Values.env.AUTHN_KUBECONFIG_CRT_EXPIRES_IN }}
-  AUTHN_KUBECONFIG_SERVER_URL: {{ .Values.env.AUTHN_KUBECONFIG_SERVER_URL }}
   AUTHN_NAMESPACE: {{ .Release.Namespace }}
   POD_NAMESPACE: {{ .Release.Namespace }}
-  AUTHN_CORS: "{{ .Values.env.AUTHN_CORS }}"
-  AUTHN_DUMP_ENV: "{{ .Values.env.AUTHN_DUMP_ENV }}"
+  {{- range $key, $value := .Values.env }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}

@@ -4,24 +4,24 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.15.0
-  name: oidcconfigs.oidc.authn.krateo.io
+  name: githubconfigs.oauth.authn.krateo.io
 spec:
-  group: oidc.authn.krateo.io
+  group: oauth.authn.krateo.io
   names:
     categories:
     - krateo
     - authn
-    - oidc
-    kind: OIDCConfig
-    listKind: OIDCConfigList
-    plural: oidcconfigs
-    singular: oidcconfig
+    - github
+    kind: GithubConfig
+    listKind: GithubConfigList
+    plural: githubconfigs
+    singular: githubconfig
   scope: Namespaced
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: OIDCConfig is a AuthN Service OIDC configuration.
+        description: GithubConfig is a AuthN Service Oauth2 configuration.
         properties:
           apiVersion:
             description: |-
@@ -42,15 +42,23 @@ spec:
             type: object
           spec:
             properties:
-              additionalScopes:
+              apiUrl:
                 type: string
-              authorizationURL:
+              authStyle:
+                default: 0
+                description: |-
+                  AuthStyle optionally specifies how the endpoint wants the
+                  client ID & client secret sent. The zero value means to
+                  auto-detect.
+                type: integer
+              authURL:
+                description: 'AuthURL: oauth2 provider authorization URL'
                 type: string
               clientID:
+                description: ClientID is the application's ID.
                 type: string
-              clientSecret:
-                description: A SecretKeySelector is a reference to a secret key in
-                  an arbitrary namespace.
+              clientSecretRef:
+                description: ClientSecret is the application's secret.
                 properties:
                   key:
                     description: The key to select.
@@ -66,18 +74,29 @@ spec:
                 - name
                 - namespace
                 type: object
-              discoveryURL:
+              organization:
                 type: string
-              redirectURI:
+              redirectURL:
+                description: |-
+                  RedirectURL is the URL to redirect users going through
+                  the OAuth flow, after the resource owner's URLs.
                 type: string
+              scopes:
+                description: Scope specifies optional requested permissions.
+                items:
+                  type: string
+                type: array
               tokenURL:
-                type: string
-              userInfoURL:
+                description: 'TokenURL: oauth2 provider token exchange URL'
                 type: string
             required:
+            - authURL
             - clientID
-            - clientSecret
-            - redirectURI
+            - clientSecretRef
+            - organization
+            - redirectURL
+            - scopes
+            - tokenURL
             type: object
         required:
         - spec

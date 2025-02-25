@@ -15,16 +15,6 @@ rules:
   - list
   - create
   - update
-  - delete
-- apiGroups:
-  - templates.krateo.io
-  resources:
-  - restactions
-  verbs:
-  - get
-  - create
-  - update
-  - delete
 # krateo basic.authn crd
 - apiGroups:
   - basic.authn.krateo.io
@@ -38,7 +28,7 @@ rules:
 - apiGroups:
   - oauth.authn.krateo.io
   resources:
-  - oauthconfigs
+  - githubconfigs
   verbs:
   - get
   - list

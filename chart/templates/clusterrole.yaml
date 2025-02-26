@@ -39,3 +39,17 @@ rules:
   - certificatesigningrequests/status
   verbs:
   - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "authn.fullname" . }}-group
+  labels:
+    {{- include "authn.labels" . | nindent 4 }}
+rules:
+- apiGroups:
+  - templates.krateo.io
+  resources:
+  - restactions
+  verbs:
+  - get

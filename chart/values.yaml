@@ -114,3 +114,5 @@ env:
   AUTHN_KUBECONFIG_SERVER_URL: "https://kube-apiserver:6443"
   AUTHN_CORS: "true"
   AUTHN_DUMP_ENV: "true"
+
+jwtSignKeySecretName: JWT_SIGN_KEY

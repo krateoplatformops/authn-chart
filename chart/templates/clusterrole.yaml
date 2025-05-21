@@ -18,6 +18,14 @@ rules:
   - watch
   - approve
   - update
+- apiGroups:
+  - certificates.k8s.io
+  resources:
+  - signers
+  resourceNames:
+  - kubernetes.io/kube-apiserver-client
+  verbs:
+  - approve
 # allow approving a CertificateSigningRequest:
 - apiGroups:
   - certificates.k8s.io

@@ -1,7 +1,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "authn.fullname" . }}
+  name: {{ include "authn.fullname" . }}-{{ .Release.Namespace }}
   labels:
     {{- include "authn.labels" . | nindent 4 }}
 rules:
@@ -37,7 +37,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "authn.fullname" . }}-group
+  name: {{ include "authn.fullname" . }}-group-{{ .Release.Namespace }}
   labels:
     {{- include "authn.labels" . | nindent 4 }}
 rules:

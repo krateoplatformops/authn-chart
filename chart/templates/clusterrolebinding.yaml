@@ -1,7 +1,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ include "authn.fullname" . }}
+  name: {{ include "authn.fullname" . }}-{{ .Release.Namespace }}
   labels:
     {{- include "authn.labels" . | nindent 4 }}
 roleRef:
@@ -13,16 +13,15 @@ subjects:
   name: {{ include "authn.fullname" . }}
   namespace: {{ .Release.Namespace }}
 ---
-
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ include "authn.fullname" . }}-group
+  name: {{ include "authn.fullname" . }}-group-{{ .Release.Namespace }}
 subjects:
 - kind: Group
   name: authn
   apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: ClusterRole
-  name: {{ include "authn.fullname" . }}-group
+  name: {{ include "authn.fullname" . }}-group-{{ .Release.Namespace }}
   apiGroup: rbac.authorization.k8s.io

@@ -114,5 +114,6 @@ env:
   AUTHN_KUBECONFIG_SERVER_URL: "https://kube-apiserver:6443"
   AUTHN_CORS: "true"
   AUTHN_DUMP_ENV: "true"
+  URL_SNOWPLOW: http://snowplow.krateo-system.svc.cluster.local:8081
 
 jwtSignKeySecretName: jwt-sign-key

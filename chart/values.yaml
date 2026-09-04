@@ -115,4 +115,24 @@ env:
   AUTHN_CORS: "true"
   AUTHN_DUMP_ENV: "true"
 
+  # --- authn's own service certificate ---
+  # These govern the `authn-clientconfig` Secret only, the identity snowplow
+  # presents when it runs RESTActions on authn's behalf.
+  # AUTHN_KUBECONFIG_CRT_EXPIRES_IN above still governs per-login user certs.
+  #
+  # A signer grants min(requested, --cluster-signing-duration, signer CA
+  # remaining life), so the year requested here is not necessarily what you get:
+  # OpenShift pins the signing duration to 720h and rotates its CSR signer CA
+  # every 30 days. authn reads the granted expiry off the issued certificate and
+  # records it on the Secret as `authn.krateo.io/certificate-not-after`.
+  AUTHN_SERVICE_CRT_EXPIRES_IN: "8760h"
+  # Re-issue once this fraction of the GRANTED lifetime has elapsed. Scaling
+  # with what was granted rather than with what was asked lets one value serve
+  # both a full year and a certificate a rotating signer CA cut to an hour.
+  # Must be between 0 and 1 exclusive; out-of-range falls back to 0.66.
+  AUTHN_CRT_RENEWAL_THRESHOLD: "0.66"
+  # Off restores the pre-renewal behaviour: the certificate expires in place and
+  # only a pod restart re-issues it.
+  AUTHN_CRT_RENEWAL_ENABLED: "true"
+
 jwtSignKeySecretName: jwt-sign-key

@@ -1,0 +1,315 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "type": "object",
+  "title": "Authn",
+  "description": "Krateo PlatformOps AuthN service. Every key of the chart's values.yaml is typed here. Free-form blocks (podAnnotations, resources, securityContext, probes, affinity, ...) are intentionally left open so arbitrary Kubernetes fields pass through.",
+  "additionalProperties": false,
+  "properties": {
+    "replicaCount": {
+      "type": "integer",
+      "title": "Replica count",
+      "minimum": 0,
+      "description": "authn assumes a SINGLE writer for certificate renewal: the CSR object is named after the username, so two replicas race on the CSR named 'authn'. Set AUTHN_CRT_RENEWAL_ENABLED=false on extra replicas if you scale out."
+    },
+    "image": {
+      "type": "object",
+      "title": "Image",
+      "additionalProperties": false,
+      "properties": {
+        "repository": {
+          "type": "string"
+        },
+        "pullPolicy": {
+          "type": "string",
+          "enum": [
+            "IfNotPresent",
+            "Always",
+            "Never"
+          ]
+        },
+        "tag": {
+          "type": "string",
+          "description": "Overrides the image tag whose default is the chart appVersion."
+        }
+      }
+    },
+    "imagePullSecrets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    "nameOverride": {
+      "type": "string"
+    },
+    "fullnameOverride": {
+      "type": "string"
+    },
+    "serviceAccount": {
+      "type": "object",
+      "title": "Service account",
+      "additionalProperties": false,
+      "properties": {
+        "create": {
+          "type": "boolean"
+        },
+        "automount": {
+          "type": "boolean"
+        },
+        "annotations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "podAnnotations": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "podLabels": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "podSecurityContext": {
+      "type": "object"
+    },
+    "securityContext": {
+      "type": "object"
+    },
+    "service": {
+      "type": "object",
+      "title": "Service",
+      "additionalProperties": false,
+      "properties": {
+        "annotations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "ClusterIP",
+            "NodePort",
+            "LoadBalancer"
+          ]
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535,
+          "description": "Container/Service port; also feeds AUTHN_PORT."
+        },
+        "nodePort": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535,
+          "description": "Fixed nodePort when type is NodePort. Ignored otherwise."
+        }
+      }
+    },
+    "ingress": {
+      "type": "object",
+      "title": "Ingress",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "className": {
+          "type": "string"
+        },
+        "annotations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "hosts": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "tls": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "resources": {
+      "type": "object"
+    },
+    "livenessProbe": {
+      "type": "object"
+    },
+    "readinessProbe": {
+      "type": "object"
+    },
+    "autoscaling": {
+      "type": "object",
+      "title": "Autoscaling",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "minReplicas": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maxReplicas": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "targetCPUUtilizationPercentage": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "targetMemoryUtilizationPercentage": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      }
+    },
+    "volumes": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "volumeMounts": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "nodeSelector": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "tolerations": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "affinity": {
+      "type": "object"
+    },
+    "env": {
+      "type": "object",
+      "title": "Environment",
+      "description": "Rendered into the chart-managed ConfigMap. Null removes a key so the binary's own default applies. Unlisted variables are allowed.",
+      "properties": {
+        "AUTHN_DEBUG": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "AUTHN_KUBECONFIG_CLUSTER_NAME": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "AUTHN_KUBECONFIG_CRT_EXPIRES_IN": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "title": "Login certificate duration",
+          "description": "Duration REQUESTED for a per-login user certificate, and the ceiling on the login JWT. The signer may grant less; the JWT is clamped to the certificate's real NotAfter. Go duration string; default 24h."
+        },
+        "AUTHN_KUBECONFIG_SERVER_URL": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "AUTHN_CORS": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "AUTHN_DUMP_ENV": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "AUTHN_SERVICE_CRT_EXPIRES_IN": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "title": "authn service certificate duration",
+          "description": "Duration REQUESTED for authn's own certificate (the authn-clientconfig Secret). A signer grants min(requested, cluster signing duration, signer CA remaining life), and OpenShift caps that at 720h, so the granted expiry is read off the issued certificate and recorded on the Secret. Go duration string; default 8760h."
+        },
+        "AUTHN_CRT_RENEWAL_ENABLED": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "title": "Certificate renewal enabled",
+          "description": "Keep authn's own certificate renewed in the background. Disabling it restores the pre-renewal behaviour, where the stored certificate expires in place until the pod restarts. Default true."
+        },
+        "AUTHN_CRT_RENEWAL_THRESHOLD": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "title": "Certificate renewal threshold",
+          "description": "Fraction of the GRANTED certificate lifetime after which it is re-issued, between 0 and 1 exclusive. Scaling with what was granted lets one value serve both a full year and a certificate a rotating signer CA cut to an hour. Out-of-range values fall back to 0.66. Default 0.66."
+        }
+      },
+      "additionalProperties": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "jwtSignKeySecretName": {
+      "type": "string",
+      "title": "JWT signing key Secret",
+      "description": "Secret mounted via envFrom whose JWT_SIGN_KEY entry signs tokens. The pod does not start without it."
+    },
+    "authn-crd": {
+      "type": "object",
+      "title": "authn-crd subchart",
+      "description": "Values forwarded to the bundled authn-crd dependency. Helm injects this key, so it must be permitted."
+    },
+    "global": {
+      "type": "object",
+      "title": "Global values",
+      "description": "Values shared with subcharts; injected by Helm."
+    }
+  }
+}
